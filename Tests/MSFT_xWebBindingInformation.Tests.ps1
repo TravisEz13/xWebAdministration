@@ -11,7 +11,10 @@ Import-Module (Join-Path $here -ChildPath "..\DSCResources\MSFT_xWebsite\MSFT_xW
 Describe "MSFT_xWebBindingInformation" {
     It 'Should be able to get xWebsite' -test {
         # Force Cim Classes to register
-        $env:PSModulePath = "$env:PSModulePath;$here"
+        $tempModulePath = (Resolve-Path (join-path $here '..\..')).ProviderPath
+        $env:PSModulePath = "$env:PSModulePath;$tempModulePath"
+        Write-Verbose -message "newPsModulePath: $env:PSModulePath"  -Verbose
+        
         $resources = Get-DscResource -Name xWebsite
         $resources.count | should be 1
     }
