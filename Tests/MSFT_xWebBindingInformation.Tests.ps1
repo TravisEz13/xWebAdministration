@@ -10,8 +10,8 @@ Import-Module (Join-Path $here -ChildPath "..\DSCResources\MSFT_xWebsite\MSFT_xW
 
 # Force Cim Classes to register
 $env:PSModulePath = "$env:PSModulePath;$here"
-$resources = Get-DscResource -Module xWebAdministration 
-$resources.count | should be 6
+$resources = Get-DscResource -Name xWebsite
+$resources.count | should be 1
 
 Describe "MSFT_xWebBindingInformation" {
     $storeNames = (Get-CimClass -Namespace "root/microsoft/Windows/DesiredStateConfiguration" -ClassName "MSFT_xWebBindingInformation").CimClassProperties['CertificateStoreName'].Qualifiers['Values'].Value
