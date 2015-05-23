@@ -34,7 +34,7 @@ Describe "MSFT_xWebBindingInformation" {
         }
 
         foo -OutputPath $env:temp\foo
-        Start-DscConfiguration -Path $env:temp\foo -Wait -Verbose} | should not throw
+        Start-DscConfiguration -Path $env:temp\foo -Wait -Verbose -ErrorAction Stop} | should not throw
     }
     
     $xWebBindingInforationClass = (Get-CimClass -Namespace "root/microsoft/Windows/DesiredStateConfiguration" -ClassName "MSFT_xWebBindingInformation")
