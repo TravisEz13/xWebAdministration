@@ -8,12 +8,14 @@ if($env:APPVEYOR_BUILD_VERSION)
 
 Import-Module (Join-Path $here -ChildPath "..\DSCResources\MSFT_xWebsite\MSFT_xWebsite.psm1")
 
-# Force Cim Classes to register
-$env:PSModulePath = "$env:PSModulePath;$here"
-$resources = Get-DscResource -Name xWebsite
-$resources.count | should be 1
-
 Describe "MSFT_xWebBindingInformation" {
+    It 'Should be able to get xWebsite' -test {
+        # Force Cim Classes to register
+        $env:PSModulePath = "$env:PSModulePath;$here"
+        $resources = Get-DscResource -Name xWebsite
+        $resources.count | should be 1
+    }
+    
     $storeNames = (Get-CimClass -Namespace "root/microsoft/Windows/DesiredStateConfiguration" -ClassName "MSFT_xWebBindingInformation").CimClassProperties['CertificateStoreName'].Qualifiers['Values'].Value
     foreach ($storeName in $storeNames){
         It "Uses valid credential store: $storeName" {
