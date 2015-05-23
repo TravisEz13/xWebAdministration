@@ -10,15 +10,33 @@ Import-Module (Join-Path $here -ChildPath "..\DSCResources\MSFT_xWebsite\MSFT_xW
 
 Describe "MSFT_xWebBindingInformation" {
     It 'Should be able to get xWebsite' -test {
-        # Force Cim Classes to register
+        # just a good idea.  
+        # I thought it might force the classes to register, but it does not.
         $tempModulePath = (Resolve-Path (join-path $here '..\..')).ProviderPath
-        $env:PSModulePath = "$env:PSModulePath;$tempModulePath"
-        Write-Verbose -message "newPsModulePath: $env:PSModulePath"  -Verbose
-        
+        $env:PSModulePath = "$env:PSModulePath;$tempModulePath"      
         $resources = Get-DscResource -Name xWebsite
         $resources.count | should be 1
     }
+
+    It 'Should compile and run without throwing' -test {
+        {
+        # Force Cim Classes to register
+        configuration foo
+        {
+            Import-DscResource -ModuleName xWebAdministration
+
+            xWebsite foo
+            {
+                Name = 'foobar'
+                Ensure = 'absent'
+            }
+        }
+
+        foo -OutputPath $env:temp\foo
+        Start-DscConfiguration -Path $env:temp\foo -Wait -Verbose} | should not throw
+    }
     
+    $xWebBindingInforationClass = (Get-CimClass -Namespace "root/microsoft/Windows/DesiredStateConfiguration" -ClassName "MSFT_xWebBindingInformation")
     $storeNames = (Get-CimClass -Namespace "root/microsoft/Windows/DesiredStateConfiguration" -ClassName "MSFT_xWebBindingInformation").CimClassProperties['CertificateStoreName'].Qualifiers['Values'].Value
     foreach ($storeName in $storeNames){
         It "Uses valid credential store: $storeName" {
