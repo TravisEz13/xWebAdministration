@@ -12,8 +12,6 @@ Describe "MSFT_xWebBindingInformation" {
     It 'Should be able to get xWebsite' -test {
         # just a good idea.  
         # I thought it might force the classes to register, but it does not.
-        $tempModulePath = (Resolve-Path (join-path $here '..\..')).ProviderPath
-        $env:PSModulePath = "$env:PSModulePath;$tempModulePath"      
         $resources = Get-DscResource -Name xWebsite
         $resources.count | should be 1
     }
