@@ -21,6 +21,9 @@ Describe "MSFT_xWebBindingInformation" {
     It 'Should compile and run without throwing' -test {
         {
         # Force Cim Classes to register
+        # Update the system environment path so that LCM will load the module
+        # Requires WMF 5
+        [System.Environment]::SetEnvironmentVariable('PSModulePath',$env:PSModulePath,[System.EnvironmentVariableTarget]::Machine)
         configuration foo
         {
             Import-DscResource -ModuleName xWebAdministration
